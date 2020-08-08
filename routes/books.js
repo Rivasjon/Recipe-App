@@ -4,7 +4,7 @@ const Book = require('../models/book')
 const Author = require('../models/author')
 const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif']
 
-// All Books Route
+// All Recipes Route
 router.get('/', async (req, res) => {
   let query = Book.find()
   if (req.query.title != null && req.query.title != '') {
@@ -27,19 +27,20 @@ router.get('/', async (req, res) => {
   }
 })
 
-// New Book Route
+// New recipe Route
 router.get('/new', async (req, res) => {
   renderNewPage(res, new Book())
 })
 
-// Create Book Route
+// Create recipe Route
 router.post('/', async (req, res) => {
   const book = new Book({
     title: req.body.title,
     author: req.body.author,
     publishDate: new Date(req.body.publishDate),
     pageCount: req.body.pageCount,
-    description: req.body.description
+    description: req.body.description,
+    
   })
   saveCover(book, req.body.cover)
 
@@ -51,7 +52,7 @@ router.post('/', async (req, res) => {
   }
 })
 
-// Show Book Route
+// Show recipe Route
 router.get('/:id', async (req, res) => {
   try {
     const book = await Book.findById(req.params.id)
@@ -63,7 +64,7 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-// Edit Book Route
+// Edit recipe Route
 router.get('/:id/edit', async (req, res) => {
   try {
     const book = await Book.findById(req.params.id)
@@ -73,7 +74,7 @@ router.get('/:id/edit', async (req, res) => {
   }
 })
 
-// Update Book Route
+// Update recipe Route
 router.put('/:id', async (req, res) => {
   let book
 
@@ -82,7 +83,7 @@ router.put('/:id', async (req, res) => {
     book.title = req.body.title
     book.author = req.body.author
     book.publishDate = new Date(req.body.publishDate)
-    book.pageCount = req.body.pageCount
+    // book.pageCount = req.body.pageCount
     book.description = req.body.description
     if (req.body.cover != null && req.body.cover !== '') {
       saveCover(book, req.body.cover)
@@ -98,7 +99,7 @@ router.put('/:id', async (req, res) => {
   }
 })
 
-// Delete Book Page
+// Delete recipe Page
 router.delete('/:id', async (req, res) => {
   let book
   try {
@@ -109,7 +110,7 @@ router.delete('/:id', async (req, res) => {
     if (book != null) {
       res.render('books/show', {
         book: book,
-        errorMessage: 'Could not remove book'
+        errorMessage: 'Could not remove recipe'
       })
     } else {
       res.redirect('/')
@@ -134,9 +135,9 @@ async function renderFormPage(res, book, form, hasError = false) {
     }
     if (hasError) {
       if (form === 'edit') {
-        params.errorMessage = 'Error Updating Book'
+        params.errorMessage = 'Error Updating Recipe'
       } else {
-        params.errorMessage = 'Error Creating Book'
+        params.errorMessage = 'Error Creating Recipe'
       }
     }
     res.render(`books/${form}`, params)
